@@ -380,7 +380,7 @@ private struct StatsPage: View {
 
 // MARK: - Settings
 
-private struct SettingsPage: View {
+struct SettingsPage: View {
     let controller: GameController
     let unit: CGFloat
 

@@ -4,7 +4,7 @@ import MetaGame
 import TetrisCore
 
 /// Debug-build launch hooks for checking screens without a keyboard:
-/// `TETRIS_DATA_DIR=<dir>` keeps a separate profile, `TETRIS_SCREEN=<page|mode|pause>` opens a screen,
+/// `TETRIS_DATA_DIR=<dir>` keeps a separate profile, `TETRIS_SCREEN=<page|mode|pause|pause-settings>` opens a screen,
 /// `TETRIS_AUTOPLAY=1` lets the autopilot play the started game.
 enum DebugLaunch {
     private static let environment = ProcessInfo.processInfo.environment
@@ -26,9 +26,10 @@ enum DebugLaunch {
             controller.showMenu(page)
         } else if let mode = GameMode(rawValue: name) {
             controller.play(mode)
-        } else if name == "pause" {
+        } else if name == "pause" || name == "pause-settings" {
             controller.play(.marathon)
             controller.pause()
+            if name == "pause-settings" { controller.activate(PauseItem.settings) }
         }
     }
 }

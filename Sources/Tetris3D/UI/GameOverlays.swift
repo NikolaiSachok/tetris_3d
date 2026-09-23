@@ -10,28 +10,39 @@ struct PauseScreen: View {
         let u = unit
         ZStack {
             Color.black.opacity(0.45)
-            MenuPanel(unit: u, title: "PAUSED", hints: [.select, .confirm("CONFIRM"), KeyHint(key: "ESC", action: "RESUME")]) {
-                VStack(spacing: u * 0.1) {
-                    ForEach(Array(PauseItem.allCases.enumerated()), id: \.offset) { index, item in
-                        let selected = controller.menu.pause == index
-                        SelectableRow(unit: u, isSelected: selected,
-                                      onHover: { controller.select { $0.pause = index } },
-                                      action: { controller.activate(item) }) {
-                            Text(title(item))
-                                .font(.rounded(u * 0.5, .heavy))
-                                .tracking(u * 0.2)
-                                .foregroundStyle(.white.opacity(selected ? 1 : 0.5))
-                        }
+                .onTapGesture { if controller.menu.pauseSettings { controller.closePauseSettings() } }
+            if controller.menu.pauseSettings {
+                SettingsPage(controller: controller, unit: u)
+            } else {
+                menu
+            }
+        }
+    }
+
+    private var menu: some View {
+        let u = unit
+        return MenuPanel(unit: u, title: "PAUSED", hints: [.select, .confirm("CONFIRM"), KeyHint(key: "ESC", action: "RESUME")]) {
+            VStack(spacing: u * 0.1) {
+                ForEach(Array(PauseItem.allCases.enumerated()), id: \.offset) { index, item in
+                    let selected = controller.menu.pause == index
+                    SelectableRow(unit: u, isSelected: selected,
+                                  onHover: { controller.select { $0.pause = index } },
+                                  action: { controller.activate(item) }) {
+                        Text(title(item))
+                            .font(.rounded(u * 0.5, .heavy))
+                            .tracking(u * 0.2)
+                            .foregroundStyle(.white.opacity(selected ? 1 : 0.5))
                     }
                 }
-                .frame(width: u * 7)
             }
+            .frame(width: u * 7)
         }
     }
 
     private func title(_ item: PauseItem) -> String {
         switch item {
         case .resume: "RESUME"
+        case .settings: "SETTINGS"
         case .restart: "RESTART"
         case .leave: controller.hud.mode == .zen ? "END SESSION" : "MAIN MENU"
         }

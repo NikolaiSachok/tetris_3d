@@ -71,7 +71,7 @@ extension GhostStyle {
 }
 
 enum PauseItem: CaseIterable {
-    case resume, restart, leave
+    case resume, settings, restart, leave
 }
 
 enum ResultsItem: CaseIterable {
@@ -92,6 +92,8 @@ struct MenuState: Equatable {
     var leaderboard = GameMode.marathon
     var setting = 0
     var pause = 0
+    /// The pause menu has its settings page open.
+    var pauseSettings = false
     var results = 0
     /// The leaderboard entry the last game set, highlighted until another game is played.
     var highlightedEntry: UUID?

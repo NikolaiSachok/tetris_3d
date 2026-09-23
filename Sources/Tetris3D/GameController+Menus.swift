@@ -29,6 +29,12 @@ extension GameController {
         showMenu()
     }
 
+    /// Back to the pause menu from its settings page.
+    func closePauseSettings() {
+        audio.play(.menuBack)
+        menu.pauseSettings = false
+    }
+
     /// Starts a game from the mode select screen.
     func choose(_ mode: GameMode) {
         audio.play(.menuSelect)
@@ -48,6 +54,7 @@ extension GameController {
         if item != .resume { audio.play(.menuSelect) }
         switch item {
         case .resume: resume()
+        case .settings: menu.pauseSettings = true
         case .restart: restart()
         case .leave: leaveGame()
         }
@@ -118,13 +125,10 @@ extension GameController {
             let index = modes.firstIndex(of: menu.leaderboard) ?? 0
             select { $0.leaderboard = modes[wrap(index, key == .left ? -1 : 1, count: modes.count)] }
 
-        case (.settings, .up), (.settings, .down):
-            select { $0.setting = wrap($0.setting, key == .up ? -1 : 1, count: SettingsItem.allCases.count) }
-        case (.settings, .left), (.settings, .right):
-            adjust(SettingsItem.allCases[menu.setting], by: key == .left ? -1 : 1)
-        case (.settings, .returnKey), (.settings, .space):
-            let item = SettingsItem.allCases[menu.setting]
-            if item.isDiscrete { adjust(item, by: 1) }
+        case (.settings, .escape):
+            back()
+        case (.settings, _):
+            handleSettings(key)
 
         case (.leaderboards, .returnKey), (.achievements, .returnKey), (.stats, .returnKey):
             back()
@@ -137,7 +141,25 @@ extension GameController {
         }
     }
 
+    private func handleSettings(_ key: Key) {
+        switch key {
+        case .up, .down:
+            select { $0.setting = wrap($0.setting, key == .up ? -1 : 1, count: SettingsItem.allCases.count) }
+        case .left, .right:
+            adjust(SettingsItem.allCases[menu.setting], by: key == .left ? -1 : 1)
+        case .returnKey, .space:
+            let item = SettingsItem.allCases[menu.setting]
+            if item.isDiscrete { adjust(item, by: 1) }
+        default:
+            break
+        }
+    }
+
     private func handlePause(_ key: Key) {
+        if menu.pauseSettings {
+            if key == .escape { closePauseSettings() } else { handleSettings(key) }
+            return
+        }
         switch key {
         case .up, .down:
             select { $0.pause = wrap($0.pause, key == .up ? -1 : 1, count: PauseItem.allCases.count) }

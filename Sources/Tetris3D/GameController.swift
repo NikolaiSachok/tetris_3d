@@ -155,6 +155,7 @@ final class GameController {
     func pause() {
         guard screen == .playing || screen == .countdown, resultsTimer == nil else { return }
         menu.pause = 0
+        menu.pauseSettings = false
         screen = .paused
         audio.setPaused(true)
         audio.play(.pause)
