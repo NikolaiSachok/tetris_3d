@@ -43,7 +43,8 @@ private struct GameHUD: View {
             StatsPanel(controller: controller, unit: u)
                 .position(x: layout.stats.x, y: layout.stats.y + u * 3.6)
             if controller.profile.settings.showControls {
-                ControlsHint(unit: u).position(x: layout.controls.x, y: layout.controls.y - u * 1.7)
+                ControlsHint(rotation: controller.profile.settings.rotation, unit: u)
+                    .position(x: layout.controls.x, y: layout.controls.y - u * 1.7)
             }
             CalloutLayer(feedback: controller.feedback, anchor: layout.callout, boardCenter: layout.boardCenter, unit: u)
             CountdownLayer(step: controller.countdownStep, anchor: layout.boardCenter, unit: u)
@@ -116,22 +117,27 @@ private struct StatsPanel: View {
 }
 
 private struct ControlsHint: View {
+    let rotation: RotationDirection
     let unit: CGFloat
 
     var body: some View {
         let u = unit
         let rows: [(String, String)] = [
             ("← →", "Move"), ("↓", "Soft drop"), ("Space", "Hard drop"),
-            ("↑ X / Z", "Rotate"), ("C / ⇧", "Hold"), ("P / Esc", "Pause"),
+            ("↑ / X", "Rotate \(rotation.title.lowercased())"), ("Z", "Rotate \(rotation.opposite.title.lowercased())"),
+            ("C / ⇧", "Hold"), ("P / Esc", "Pause"),
         ]
         Grid(alignment: .leading, horizontalSpacing: u * 0.4, verticalSpacing: u * 0.14) {
             ForEach(rows, id: \.0) { key, action in
                 GridRow {
                     Text(key).foregroundStyle(.white.opacity(0.75)).gridColumnAlignment(.trailing)
-                    Text(action).foregroundStyle(.white.opacity(0.4))
+                    Text(action).foregroundStyle(.white.opacity(0.55))
                 }
             }
         }
         .font(.rounded(u * 0.3, .semibold))
+        // Lifts the text off the bright floor grid behind it.
+        .shadow(color: .black.opacity(0.9), radius: u * 0.12)
+        .shadow(color: .black.opacity(0.6), radius: u * 0.3)
     }
 }

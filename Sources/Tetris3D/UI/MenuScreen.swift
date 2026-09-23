@@ -403,6 +403,7 @@ private struct SettingsPage: View {
                             Spacer(minLength: u * 0.5)
                             switch item {
                             case .ghost: choice(settings.ghost.title, isOn: settings.ghost != .off)
+                            case .rotation: choice(settings.rotation.title, isOn: true)
                             case .controls: toggle(settings.showControls)
                             case .music: volume(item, settings.musicVolume)
                             case .effects: volume(item, settings.effectsVolume)

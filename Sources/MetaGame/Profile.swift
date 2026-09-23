@@ -35,8 +35,14 @@ public enum GhostStyle: String, Codable, CaseIterable, Sendable {
     case colored, gray, off
 }
 
+/// Which way ↑ and X turn the piece; Z always turns the other way.
+public enum RotationDirection: String, Codable, CaseIterable, Sendable {
+    case counterclockwise, clockwise
+}
+
 public struct Settings: Codable, Equatable, Sendable {
     public var ghost = GhostStyle.colored
+    public var rotation = RotationDirection.counterclockwise
     public var showControls = true
     /// 0...1
     public var musicVolume = 0.7
@@ -50,6 +56,7 @@ public struct Settings: Codable, Equatable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let defaults = Settings()
         ghost = try container.decodeIfPresent(GhostStyle.self, forKey: .ghost) ?? defaults.ghost
+        rotation = try container.decodeIfPresent(RotationDirection.self, forKey: .rotation) ?? defaults.rotation
         showControls = try container.decodeIfPresent(Bool.self, forKey: .showControls) ?? defaults.showControls
         musicVolume = try container.decodeIfPresent(Double.self, forKey: .musicVolume) ?? defaults.musicVolume
         effectsVolume = try container.decodeIfPresent(Double.self, forKey: .effectsVolume) ?? defaults.effectsVolume

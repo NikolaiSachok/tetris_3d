@@ -33,11 +33,12 @@ enum MainMenuItem: CaseIterable {
 }
 
 enum SettingsItem: CaseIterable {
-    case ghost, controls, music, effects
+    case ghost, rotation, controls, music, effects
 
     var title: String {
         switch self {
         case .ghost: "GHOST PIECE"
+        case .rotation: "ROTATION"
         case .controls: "CONTROLS HINT"
         case .music: "MUSIC VOLUME"
         case .effects: "EFFECTS VOLUME"
@@ -45,7 +46,18 @@ enum SettingsItem: CaseIterable {
     }
 
     /// Switches and choices, which RETURN and clicks step through; volumes are sliders.
-    var isDiscrete: Bool { self == .ghost || self == .controls }
+    var isDiscrete: Bool { self != .music && self != .effects }
+}
+
+extension RotationDirection {
+    var title: String {
+        switch self {
+        case .counterclockwise: "LEFT"
+        case .clockwise: "RIGHT"
+        }
+    }
+
+    var opposite: RotationDirection { self == .clockwise ? .counterclockwise : .clockwise }
 }
 
 extension GhostStyle {

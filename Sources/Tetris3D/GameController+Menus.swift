@@ -69,6 +69,7 @@ extension GameController {
         case .ghost:
             let styles = GhostStyle.allCases
             settings.ghost = styles[wrap(styles.firstIndex(of: settings.ghost) ?? 0, step, count: styles.count)]
+        case .rotation: settings.rotation = settings.rotation.opposite
         case .controls: settings.showControls.toggle()
         case .music: settings.musicVolume = GameController.volume(settings.musicVolume, nudgedBy: step)
         case .effects: settings.effectsVolume = GameController.volume(settings.effectsVolume, nudgedBy: step)
@@ -86,7 +87,7 @@ extension GameController {
         switch item {
         case .music: settings.musicVolume = snapped
         case .effects: settings.effectsVolume = snapped
-        case .ghost, .controls: return
+        case .ghost, .rotation, .controls: return
         }
         guard settings != profile.settings else { return }
         profile.settings = settings

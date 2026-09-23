@@ -176,6 +176,7 @@ private func session(_ mode: GameMode, _ configure: (inout SessionRecord) -> Voi
         _ = profile.record(session(.ultra) { $0.score = 12_345; $0.outcome = .completed; $0.lines = 30 }, on: day)
         profile.settings.musicVolume = 0.25
         profile.settings.ghost = .gray
+        profile.settings.rotation = .clockwise
         try store.save(profile)
         #expect(store.load() == profile)
     }
@@ -185,12 +186,16 @@ private func session(_ mode: GameMode, _ configure: (inout SessionRecord) -> Voi
         var profile = Profile()
         profile.settings.musicVolume = 0.25
         try store.save(profile)
+        let saved = try String(contentsOf: store.url, encoding: .utf8)
+        #expect(saved.contains("\"ghost\" : \"colored\",") && saved.contains("\"rotation\" : \"counterclockwise\","))
         let json = try String(contentsOf: store.url, encoding: .utf8)
             .replacingOccurrences(of: "\"ghost\" : \"colored\",", with: "")
+            .replacingOccurrences(of: "\"rotation\" : \"counterclockwise\",", with: "")
         try Data(json.utf8).write(to: store.url)
 
         let loaded = store.load()
         #expect(loaded.settings.ghost == .colored)
+        #expect(loaded.settings.rotation == .counterclockwise)
         #expect(loaded.settings.musicVolume == 0.25)
     }
 

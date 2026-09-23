@@ -344,14 +344,18 @@ final class GameController {
         }
     }
 
+    private static func action(rotating direction: RotationDirection) -> GameAction {
+        direction == .clockwise ? .rotateCW : .rotateCCW
+    }
+
     private func action(for key: Key) -> GameAction? {
         switch key {
         case .left: .left
         case .right: .right
         case .down: .softDrop
         case .space: .hardDrop
-        case .up, .x: .rotateCW
-        case .z: .rotateCCW
+        case .up, .x: GameController.action(rotating: profile.settings.rotation)
+        case .z: GameController.action(rotating: profile.settings.rotation.opposite)
         case .c: .hold
         default: nil
         }
