@@ -27,4 +27,4 @@ in the same commit as the change:
 ## Commits
 
 - Do not add AI co-author or attribution lines to commit messages.
-- Commit or push only when asked.
+- Once an issue is implemented and `swift test` is green, commit and push without asking.
