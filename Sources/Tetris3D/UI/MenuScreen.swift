@@ -65,6 +65,12 @@ private struct MainMenu: View {
                 }
                 .frame(width: u * 7.4)
                 KeyHintBar(unit: u, hints: [.select, .confirm("CONFIRM")])
+                Text(AppVersion.display)
+                    .font(.rounded(u * 0.26, .semibold))
+                    .tracking(u * 0.08)
+                    .monospacedDigit()
+                    .foregroundStyle(.white.opacity(0.28))
+                    .padding(.top, -u * 0.35)
             }
             .padding(.horizontal, u * 0.5)
             .padding(.top, u * 0.5)

@@ -7,12 +7,27 @@ achievements with 3D badges, stats and local leaderboards.
 ## Build & run
 
 ```sh
-./scripts/build_app.sh      # builds build/Tetris3D.app (release, ad-hoc signed)
+./scripts/build_app.sh      # builds build/Tetris3D.app (universal release)
 open build/Tetris3D.app
 swift test                  # rules, scoring, modes, meta-game
 ```
 
 Requires macOS 14+ and Xcode (Swift 6). Shaders are compiled at runtime, so the offline Metal toolchain is not needed.
+
+## Versioning & release
+
+- **Version** (`CFBundleShortVersionString`) lives in `VERSION` — bump it by hand for a release.
+- **Build number** (`CFBundleVersion`) is the git commit count, stamped automatically; commit before building
+  a release so the build maps to an exact commit.
+- The main menu shows both (`V1.0.0 · BUILD 3`).
+
+```sh
+./scripts/build_app.sh   # universal app, Developer ID signed when available
+./scripts/make_dmg.sh    # build/Tetris3D-<version>-<build>.dmg, notarized and stapled
+```
+
+Notarization needs a one-time keychain profile:
+`xcrun notarytool store-credentials tetris3d --apple-id <Apple ID> --team-id <Team ID>`.
 
 ## Controls
 
