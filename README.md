@@ -16,7 +16,8 @@ Requires macOS 14+ and Xcode (Swift 6). Shaders are compiled at runtime, so the 
 
 ## Versioning & release
 
-- **Version** (`CFBundleShortVersionString`) lives in `VERSION` — bump it by hand for a release.
+- **Version** (`CFBundleShortVersionString`) lives in `VERSION` and follows semantic versioning; every fix or
+  feature bumps it via `scripts/bump_version.sh` (rules in [AGENTS.md](AGENTS.md)).
 - **Build number** (`CFBundleVersion`) is the git commit count, stamped automatically; commit before building
   a release so the build maps to an exact commit.
 - The main menu shows both (`V1.0.0 · BUILD 3`).
