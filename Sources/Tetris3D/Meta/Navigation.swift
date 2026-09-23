@@ -1,4 +1,5 @@
 import Foundation
+import MetaGame
 import TetrisCore
 
 enum MenuPage: Equatable {
@@ -40,6 +41,19 @@ enum SettingsItem: CaseIterable {
         case .controls: "CONTROLS HINT"
         case .music: "MUSIC VOLUME"
         case .effects: "EFFECTS VOLUME"
+        }
+    }
+
+    /// Switches and choices, which RETURN and clicks step through; volumes are sliders.
+    var isDiscrete: Bool { self == .ghost || self == .controls }
+}
+
+extension GhostStyle {
+    var title: String {
+        switch self {
+        case .colored: "COLOR"
+        case .gray: "GRAY"
+        case .off: "OFF"
         }
     }
 }

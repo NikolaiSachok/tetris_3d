@@ -30,8 +30,13 @@ public struct LifetimeStats: Codable, Equatable, Sendable {
     }
 }
 
+/// How the landing-position hint for the falling piece is drawn.
+public enum GhostStyle: String, Codable, CaseIterable, Sendable {
+    case colored, gray, off
+}
+
 public struct Settings: Codable, Equatable, Sendable {
-    public var showGhost = true
+    public var ghost = GhostStyle.colored
     public var showControls = true
     /// 0...1
     public var musicVolume = 0.7
@@ -39,6 +44,16 @@ public struct Settings: Codable, Equatable, Sendable {
     public var effectsVolume = 0.8
 
     public init() {}
+
+    /// Missing keys keep their defaults, so adding or renaming a setting never discards a profile.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let defaults = Settings()
+        ghost = try container.decodeIfPresent(GhostStyle.self, forKey: .ghost) ?? defaults.ghost
+        showControls = try container.decodeIfPresent(Bool.self, forKey: .showControls) ?? defaults.showControls
+        musicVolume = try container.decodeIfPresent(Double.self, forKey: .musicVolume) ?? defaults.musicVolume
+        effectsVolume = try container.decodeIfPresent(Double.self, forKey: .effectsVolume) ?? defaults.effectsVolume
+    }
 }
 
 /// How a finished game changed the profile, for the result screen.

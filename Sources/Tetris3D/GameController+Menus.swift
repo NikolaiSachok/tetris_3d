@@ -62,11 +62,13 @@ extension GameController {
         }
     }
 
-    /// Toggles a switch, or nudges a volume by `step` tenths.
+    /// Cycles a choice, toggles a switch, or nudges a volume by `step` tenths.
     func adjust(_ item: SettingsItem, by step: Int) {
         var settings = profile.settings
         switch item {
-        case .ghost: settings.showGhost.toggle()
+        case .ghost:
+            let styles = GhostStyle.allCases
+            settings.ghost = styles[wrap(styles.firstIndex(of: settings.ghost) ?? 0, step, count: styles.count)]
         case .controls: settings.showControls.toggle()
         case .music: settings.musicVolume = GameController.volume(settings.musicVolume, nudgedBy: step)
         case .effects: settings.effectsVolume = GameController.volume(settings.effectsVolume, nudgedBy: step)
@@ -74,7 +76,7 @@ extension GameController {
         guard settings != profile.settings else { return }
         profile.settings = settings
         applyVolumes()
-        audio.play(item == .ghost || item == .controls ? .menuSelect : .menuMove)
+        audio.play(item.isDiscrete ? .menuSelect : .menuMove)
     }
 
     /// Sets a volume from a click or drag, snapped to 5 % steps.
@@ -121,7 +123,7 @@ extension GameController {
             adjust(SettingsItem.allCases[menu.setting], by: key == .left ? -1 : 1)
         case (.settings, .returnKey), (.settings, .space):
             let item = SettingsItem.allCases[menu.setting]
-            if item == .ghost || item == .controls { adjust(item, by: 1) }
+            if item.isDiscrete { adjust(item, by: 1) }
 
         case (.leaderboards, .returnKey), (.achievements, .returnKey), (.stats, .returnKey):
             back()

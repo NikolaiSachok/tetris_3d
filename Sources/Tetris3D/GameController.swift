@@ -60,7 +60,7 @@ final class GameController {
         audio.playMusic(.menu)
     }
 
-    var showsGhost: Bool { session != nil && !game.isFinished && profile.settings.showGhost }
+    var ghostStyle: GhostStyle { session != nil && !game.isFinished ? profile.settings.ghost : .off }
 
     // MARK: - Lifecycle
 

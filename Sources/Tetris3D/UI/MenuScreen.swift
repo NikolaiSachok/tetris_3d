@@ -393,7 +393,7 @@ private struct SettingsPage: View {
                     let selected = controller.menu.setting == index
                     SelectableRow(unit: u, isSelected: selected,
                                   onHover: { controller.select { $0.setting = index } },
-                                  action: { if item == .ghost || item == .controls { controller.adjust(item, by: 1) } }) {
+                                  action: { if item.isDiscrete { controller.adjust(item, by: 1) } }) {
                         HStack {
                             Text(item.title)
                                 .font(.rounded(u * 0.42, .heavy))
@@ -402,7 +402,7 @@ private struct SettingsPage: View {
                                 .fixedSize()
                             Spacer(minLength: u * 0.5)
                             switch item {
-                            case .ghost: toggle(settings.showGhost)
+                            case .ghost: choice(settings.ghost.title, isOn: settings.ghost != .off)
                             case .controls: toggle(settings.showControls)
                             case .music: volume(item, settings.musicVolume)
                             case .effects: volume(item, settings.effectsVolume)
@@ -416,12 +416,16 @@ private struct SettingsPage: View {
     }
 
     private func toggle(_ isOn: Bool) -> some View {
+        choice(isOn ? "ON" : "OFF", isOn: isOn)
+    }
+
+    private func choice(_ title: String, isOn: Bool) -> some View {
         let u = unit
-        return Text(isOn ? "ON" : "OFF")
+        return Text(title)
             .font(.rounded(u * 0.32, .heavy))
             .tracking(u * 0.1)
             .foregroundStyle(isOn ? .black : .white.opacity(0.6))
-            .frame(width: u * 1.4, height: u * 0.55)
+            .frame(width: u * 2.1, height: u * 0.55)
             .background(Capsule().fill(isOn ? Palette.tetris : .white.opacity(0.08)))
             .overlay(Capsule().strokeBorder(.white.opacity(isOn ? 0 : 0.2)))
     }

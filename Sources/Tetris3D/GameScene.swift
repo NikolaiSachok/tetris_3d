@@ -1,3 +1,4 @@
+import MetaGame
 import simd
 import TetrisCore
 
@@ -34,6 +35,9 @@ struct GameScene {
         case .l: [1.0, 0.38, 0.02]
         }
     }
+
+    /// Neutral landing hint for players who find the colored one distracting.
+    static let ghostGray: SIMD3<Float> = [0.26, 0.28, 0.32]
 
     static func accent(level: Int) -> SIMD3<Float> {
         let palette: [SIMD3<Float>] = [
@@ -170,7 +174,7 @@ struct GameScene {
     // MARK: - Instances
 
     /// Opaque, shadow-casting instances followed by the translucent ghost instances.
-    func buildInstances(game: Game, showGhost: Bool) -> (opaque: [Instance], ghost: [Instance]) {
+    func buildInstances(game: Game, ghostStyle: GhostStyle) -> (opaque: [Instance], ghost: [Instance]) {
         var opaque: [Instance] = []
         opaque.reserveCapacity(260)
         appendFrame(to: &opaque)
@@ -210,10 +214,11 @@ struct GameScene {
             for position in activeVisual {
                 opaque.append(Instance(center: position, color: color, emissive: pulse, edgeGlow: 0.6))
             }
-            if showGhost, let shadowPiece = game.ghost, shadowPiece.origin != piece.origin {
+            if ghostStyle != .off, let shadowPiece = game.ghost, shadowPiece.origin != piece.origin {
+                let ghostColor = ghostStyle == .gray ? GameScene.ghostGray : color
                 for cell in shadowPiece.cells {
                     ghost.append(Instance(center: Layout.position(x: Float(cell.x), y: Float(cell.y)),
-                                          color: color, opacity: 0.9, style: .ghost))
+                                          color: ghostColor, opacity: 0.9, style: .ghost))
                 }
             }
         }

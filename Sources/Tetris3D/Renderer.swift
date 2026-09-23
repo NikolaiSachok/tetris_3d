@@ -263,7 +263,7 @@ final class Renderer: NSObject, MTKViewDelegate {
         commandBuffer.addCompletedHandler { _ in semaphore.signal() }
 
         let scene = controller.scene
-        let (opaque, ghost) = scene.buildInstances(game: controller.game, showGhost: controller.showsGhost)
+        let (opaque, ghost) = scene.buildInstances(game: controller.game, ghostStyle: controller.ghostStyle)
         let particles = scene.particles.gpuParticles()
         let instanceBuffer = instanceBuffers[frameIndex]
         let particleBuffer = particleBuffers[frameIndex]
